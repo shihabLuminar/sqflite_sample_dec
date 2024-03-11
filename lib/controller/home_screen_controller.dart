@@ -27,10 +27,10 @@ class HomeScreenController {
   }
 
   // function to edit data in db
-  static Future editData(var id) async {
+  static Future editData(
+      {var id, required String name, required String des}) async {
     await database.rawUpdate(
-        'UPDATE Empolyees SET name = ?, des = ? WHERE id = ?',
-        ['editted', '9876', id]);
+        'UPDATE Empolyees SET name = ?, des = ? WHERE id = ?', [name, des, id]);
     await getAllDataFromDb();
   }
 

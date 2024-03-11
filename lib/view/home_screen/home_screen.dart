@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:sqflite_sample_program/controller/home_screen_controller.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,6 +11,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   TextEditingController c1 = TextEditingController();
   TextEditingController c2 = TextEditingController();
+
+  int? selectedInded;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,16 +26,30 @@ class _HomeScreenState extends State<HomeScreen> {
             TextField(
                 controller: c2,
                 decoration: InputDecoration(hintText: "designation")),
-            ElevatedButton(
-                onPressed: () async {
-//fuction to save data to database
+            Row(
+              children: [
+                ElevatedButton(
+                    onPressed: () async {
+                      //fuction to save data to database
 
-                  await HomeScreenController.addDataToDb(
-                      des: c2.text, name: c1.text);
-                  await HomeScreenController.getAllDataFromDb();
-                  setState(() {});
-                },
-                child: Text("save")),
+                      await HomeScreenController.addDataToDb(
+                          des: c2.text, name: c1.text);
+                      await HomeScreenController.getAllDataFromDb();
+                      setState(() {});
+                    },
+                    child: Text("save")),
+                ElevatedButton(
+                    onPressed: () async {
+                      //fuction to save data to database
+                      await HomeScreenController.editData(
+                          des: c2.text,
+                          name: c1.text,
+                          id: HomeScreenController.data[selectedInded!]["id"]);
+                      setState(() {});
+                    },
+                    child: Text("edit")),
+              ],
+            ),
             Expanded(
                 child: ListView.builder(
               itemCount: HomeScreenController.data.length,
@@ -47,8 +62,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     Spacer(),
                     InkWell(
                         onTap: () async {
-                          await HomeScreenController.editData(
-                              HomeScreenController.data[index]["id"]);
+                          c1.text = HomeScreenController.data[index]["name"]
+                              .toString();
+
+                          c2.text = HomeScreenController.data[index]["des"]
+                              .toString();
+                          selectedInded = index;
+
                           setState(() {});
                         },
                         child: Icon(Icons.edit)),
